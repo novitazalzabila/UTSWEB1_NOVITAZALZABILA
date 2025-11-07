@@ -1,3 +1,41 @@
+<?php
+
+session_start();
+
+
+if (isset($_SESSION['username'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
+
+$error_message = '';
+$username = 'admin'; 
+$password = '1234'; 
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  
+    $input_user = $_POST['username'];
+    $input_pass = $_POST['password'];
+
+   
+    if ($input_user === $username && $input_pass === $password) {
+     
+        $_SESSION['username'] = $input_user;
+   
+        $_SESSION['login_success'] = true; 
+        
+   
+        header("Location: dashboard.php");
+        exit();
+    } else {
+       
+        $error_message = 'Username atau password salah!';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -13,12 +51,18 @@
         <div class="login-card">
             <h1>POLGAN MART</h1>
             
+            <!-- pesan error -->
+            <?php if (!empty($error_message)): ?>
+                <div class="error-message">
+                    <?php echo $error_message; ?>
+                </div>
+            <?php endif; ?>
 
             <form action="index.php" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type
-="text" id="username" name="username" value="" required>
+="text" id="username" name="username" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" required>
                 </div>
                 
                 <div class="form-group">
