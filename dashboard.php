@@ -124,6 +124,20 @@ $kasir = $username;
     <?php endif; ?>
     <!-- AKHIR MODAL -->
 
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="logo">
+                <span>PM</span>
+                --POLGAN MART--
+            </div>
+            <div class="user-info">
+                <span>Selamat datang, <strong><?php echo htmlspecialchars($username); ?></strong>!</span>
+                <a href="logout.php" class="btn btn-logout">Logout</a>
+            </div>
+        </header>
+        
+        
+    </div>
 
 </body>
 </html>
