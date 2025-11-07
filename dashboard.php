@@ -164,6 +164,11 @@ $kasir = $username;
                     </tbody>
                     <tfoot>
                         
+                        <tr>
+                            <td colspan="4" class="total-label">Total Belanja</td>
+                            <td class="total-value"><?php echo format_rupiah($grand_total); ?></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
