@@ -136,7 +136,40 @@ $kasir = $username;
             </div>
         </header>
         
-        
+        <main class="dashboard-content">
+            <h2>Daftar Pembelian</h2>
+            
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama Barang</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <?php foreach ($daftar_pembelian as $item): ?>
+                            <tr>
+                                <td><?php echo $item['kode']; ?></td>
+                                <td><?php echo $item['nama']; ?></td>
+                                <td><?php echo format_rupiah($item['harga']); ?></td>
+                                <td><?php echo $item['jumlah']; ?></td>
+                                <td><?php echo format_rupiah($item['total']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                    <tfoot>
+                        
+                </table>
+            </div>
+
+            
+     
+        </main>
     </div>
 
 </body>
