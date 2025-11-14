@@ -2,52 +2,51 @@
 
 session_start();
 
-
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
     exit();
 }
 
-
 $username = $_SESSION['username'];
-
 
 $show_welcome_modal = false;
 if (isset($_SESSION['login_success'])) {
     $show_welcome_modal = true;
-    
-    unset($_SESSION['login_success']); 
+    unset($_SESSION['login_success']);
 }
 
-
+// ===============================
+// ARRAY PRODUK MULTIDIMENSI
+// ===============================
 $produk = [
-    ['kode' => 'K001', 'nama' => 'Teh Pucuk', 'harga' => 5000],
-    ['kode' => 'K002', 'nama' => 'Sukro', 'harga' => 1000],
-    ['kode' => 'K003', 'nama' => 'Sprite', 'harga' => 4000],
-    ['kode' => 'K004', 'nama' => 'Coca-Cola', 'harga' => 5000],
-    ['kode' => 'K005', 'nama' => 'Chitose', 'harga' => 3000]
+    "barang" => [
+        ['kode' => 'K001', 'nama' => 'Teh Pucuk', 'harga' => 5000],
+        ['kode' => 'K002', 'nama' => 'Sukro', 'harga' => 1000],
+        ['kode' => 'K003', 'nama' => 'Sprite', 'harga' => 4000],
+        ['kode' => 'K004', 'nama' => 'Coca-Cola', 'harga' => 5000],
+        ['kode' => 'K005', 'nama' => 'Chitose', 'harga' => 3000]
+    ]
 ];
 
-
+// ===============================
+// PROSES RANDOM PEMBELIAN
+// ===============================
 $daftar_pembelian = [];
 $grand_total = 0;
-$produk_untuk_random = $produk;
-$jumlah_item_dibeli = rand(3, 5);
+$produk_untuk_random = $produk["barang"]; // <-- hanya barang
+$jumlah_item_dibeli = 5;
 
 for ($i = 0; $i < $jumlah_item_dibeli; $i++) {
-    
+
     if (empty($produk_untuk_random)) {
         break;
     }
-    
 
     $index_produk = array_rand($produk_untuk_random);
     $barang_terpilih = $produk_untuk_random[$index_produk];
-    
+
     $jumlah = rand(1, 5);
-    
     $total_per_item = $barang_terpilih['harga'] * $jumlah;
-    
     $grand_total += $total_per_item;
 
     $daftar_pembelian[] = [
@@ -58,15 +57,12 @@ for ($i = 0; $i < $jumlah_item_dibeli; $i++) {
         'total' => $total_per_item
     ];
 
-    
-    unset($produk_untuk_random[$index_produk]); 
+    unset($produk_untuk_random[$index_produk]);
 }
-
 
 function format_rupiah($angka) {
     return 'Rp ' . number_format($angka, 0, ',', '.');
 }
-
 
 $tanggal_transaksi = date("d.m.Y H:i:s");
 $kasir = $username;
@@ -83,6 +79,7 @@ $kasir = $username;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <!-- Modal Selamat Datang -->
     <?php if ($show_welcome_modal): ?>
     <div id="welcomeModal" class="modal-overlay">
@@ -90,25 +87,22 @@ $kasir = $username;
             <h2 class="modal-title">Selamat Datang, <?php echo htmlspecialchars($username); ?>!</h2>
             <p class="modal-role">Role: Admin</p>
             <p class="modal-message">Anda berhasil login ke sistem.</p>
-  
+
             <button id="closeModalBtn" class="btn btn-close-modal" style="display: none;">Lanjutkan</button>
         </div>
     </div>
     <script>
- 
-        const modal = document.getElementById('welcomeModal');
-        const logoutBtn = document.querySelector('.btn-logout-modal');
-        const dashboardContent = document.querySelector('.dashboard-container');
 
+        const modal = document.getElementById('welcomeModal');
+        const dashboardContent = document.querySelector('.dashboard-container');
 
         if (dashboardContent) {
             dashboardContent.style.display = 'none';
         }
 
-
         setTimeout(() => {
             if (modal) {
-                modal.classList.add('hide'); 
+                modal.classList.add('hide');
             }
 
             setTimeout(() => {
@@ -118,8 +112,8 @@ $kasir = $username;
                 if (dashboardContent) {
                     dashboardContent.style.display = 'block';
                 }
-            }, 500); 
-        }, 2500); 
+            }, 500);
+        }, 2500);
     </script>
     <?php endif; ?>
     <!-- AKHIR MODAL -->
@@ -135,10 +129,10 @@ $kasir = $username;
                 <a href="logout.php" class="btn btn-logout">Logout</a>
             </div>
         </header>
-        
+
         <main class="dashboard-content">
             <h2>Daftar Pembelian</h2>
-            
+
             <div class="sales-table-container">
                 <table class="sales-table">
                     <thead>
@@ -151,7 +145,7 @@ $kasir = $username;
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         <?php foreach ($daftar_pembelian as $item): ?>
                             <tr>
                                 <td><?php echo $item['kode']; ?></td>
@@ -163,7 +157,6 @@ $kasir = $username;
                         <?php endforeach; ?>
                     </tbody>
                     <tfoot>
-                        
                         <tr>
                             <td colspan="4" class="total-label">Total Belanja</td>
                             <td class="total-value"><?php echo format_rupiah($grand_total); ?></td>
@@ -172,33 +165,38 @@ $kasir = $username;
                 </table>
             </div>
 
-            
             <div class="purchase-receipt-container">
                 <div class="receipt-box">
                     <div class="receipt-content">
-                    
+
                         <p id="s1">====== STRUK PEMBELIAN ======</p>
                         <p id="s2">Tanggal : <?php echo $tanggal_transaksi; ?></p>
                         <p id="s3">Kasir   : <?php echo htmlspecialchars($kasir); ?></p>
                         <p>-------------------------------------------------</p>
+
                         <p id="s4">
                         <?php 
                         foreach ($daftar_pembelian as $item) {
                             $line = sprintf(
-                            "%s (%d x %s) = %s\n",
+                                "%s (%d x %s) = %s\n",
                                 $item['nama'],
                                 $item['jumlah'],
                                 format_rupiah($item['harga']),
                                 format_rupiah($item['total'])
                             );
-                            echo $line;}?></p>
+                            echo $line;
+                        }
+                        ?>
+                        </p>
+
                         <p>-------------------------------------------------</p>
                         <p id="s5">Total Belanja : <?php echo format_rupiah($grand_total); ?></p>
                         <p id="s6">Terima Kasih Telah Berbelanja di POLGAN MART!</p>
+
                     </div>
                 </div>
             </div>
-            
+
         </main>
     </div>
 
